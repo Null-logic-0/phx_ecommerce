@@ -14,4 +14,14 @@ defmodule PhxEcommerceWeb.ProductHTML do
   attr :return_to, :string, default: nil
 
   def product_form(assigns)
+
+  def category_opts(changeset) do
+    changeset
+    |> Ecto.Changeset.get_change(:categories, [])
+    |> Enum.map(& &1.data.id)
+
+    for cat <- PhxEcommerce.Catalog.list_categories() do
+      {cat.title, cat.id}
+    end
+  end
 end
