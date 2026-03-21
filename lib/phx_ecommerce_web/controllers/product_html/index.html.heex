@@ -1,0 +1,37 @@
+<Layouts.app flash={@flash}>
+  <.header>
+    Listing Products
+    <:actions>
+      <.button href={~p"/products/new"}>
+        <.icon name="hero-plus" /> New Product
+      </.button>
+    </:actions>
+  </.header>
+
+  <.table
+    id="products"
+    rows={@products}
+    row_click={&JS.navigate(~p"/products/#{&1}")}
+  >
+    <:col :let={product} label="Title">{product.title}</:col>
+    <:col :let={product} label="Description">
+      <p class="truncate max-w-30">{product.description}</p>
+    </:col>
+    <:col :let={product} label="Price">{product.price}</:col>
+    <:action :let={product}>
+      <div class="sr-only">
+        <.link navigate={~p"/products/#{product}"}>
+          <.icon name="hero-eye-solid" />
+        </.link>
+      </div>
+      <.link navigate={~p"/products/#{product}/edit"}>
+        <.icon name="hero-pencil-solid" />
+      </.link>
+    </:action>
+    <:action :let={product}>
+      <.link href={~p"/products/#{product}"} method="delete" data-confirm="Are you sure?">
+        <.icon name="hero-trash-solid" />
+      </.link>
+    </:action>
+  </.table>
+</Layouts.app>

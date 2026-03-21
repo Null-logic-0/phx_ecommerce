@@ -1,0 +1,36 @@
+<Layouts.app flash={@flash}>
+  <.header>
+    Product {@product.id}
+    <:subtitle>This is a product record from your database.</:subtitle>
+    <:actions>
+      <.button navigate={~p"/products"}>
+        <.icon name="hero-arrow-left" />
+      </.button>
+      <.button variant="primary" navigate={~p"/products/#{@product}/edit?return_to=show"}>
+        <.icon name="hero-pencil-square" /> Edit product
+      </.button>
+    </:actions>
+  </.header>
+
+  <div class="flex gap-6">
+    <img
+      src={@product.image_path}
+      alt={@product.title}
+      class="w-96 h-96 object-cover rounded-xl "
+    />
+
+    <div class="card-body">
+      <h2 class="card-title">
+        {@product.title}
+      </h2>
+
+      <p>
+        {@product.description}
+      </p>
+
+      <p>
+        ${@product.price}
+      </p>
+    </div>
+  </div>
+</Layouts.app>
