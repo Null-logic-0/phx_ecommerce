@@ -4,6 +4,10 @@ defmodule PhxEcommerceWeb.PageController do
 
   def home(conn, _params) do
     products = Catalog.list_products()
-    render(conn, :home, products: products, page_title: "Products List")
+
+    render(conn, :home,
+      products: products,
+      page_title: "Products List"
+    )
   end
 end

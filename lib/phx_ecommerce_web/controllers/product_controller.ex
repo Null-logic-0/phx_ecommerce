@@ -15,6 +15,8 @@ defmodule PhxEcommerceWeb.ProductController do
   end
 
   def create(conn, %{"product" => product_params}) do
+    IO.inspect(product_params)
+
     case Catalog.create_product(product_params) do
       {:ok, product} ->
         conn

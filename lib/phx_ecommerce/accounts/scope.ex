@@ -18,7 +18,7 @@ defmodule PhxEcommerce.Accounts.Scope do
 
   alias PhxEcommerce.Accounts.User
 
-  defstruct user: nil
+  defstruct user: nil, is_admin: false
 
   @doc """
   Creates a scope for the given user.
@@ -26,7 +26,7 @@ defmodule PhxEcommerce.Accounts.Scope do
   Returns nil if no user is given.
   """
   def for_user(%User{} = user) do
-    %__MODULE__{user: user}
+    %__MODULE__{user: user, is_admin: user.is_admin}
   end
 
   def for_user(nil), do: nil

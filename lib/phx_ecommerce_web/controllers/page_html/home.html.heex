@@ -2,12 +2,12 @@
   <h1 class="text-3xl font-bold">
     {@page_title}
   </h1>
-  <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4  gap-8">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3  gap-8">
     <%= for product <- @products do %>
-      <div class="card-sm bg-base-200 w-full  shadow-sm rounded-2xl overflow-hidden">
-        <figure>
+      <div class="card-sm bg-base-200 w-full shadow-lg rounded-2xl overflow-hidden">
+        <figure class="bg-white">
           <.link navigate={~p"/products/#{product}"}>
-            <img src={product.image_path} alt={product.title} class="w-full h-43 object-cover" />
+            <img src={product.image_path} alt={product.title} class="w-full h-96 object-cover" />
           </.link>
         </figure>
 
@@ -29,4 +29,15 @@
       </div>
     <% end %>
   </div>
+
+  <%= if @products == [] do %>
+    <div class="text-center py-20 text-gray-500">
+      <p class="text-xl font-semibold mb-2">
+        No products available
+      </p>
+      <p class="text-gray-400">
+        Check back later for new items!
+      </p>
+    </div>
+  <% end %>
 </Layouts.app>

@@ -2,20 +2,40 @@
   <.header>
     Thank you for your order!
     <:subtitle>
-      <strong>Email: </strong>{@current_scope.user.email}
+      <strong>Email:</strong> {@current_scope.user.email}
     </:subtitle>
   </.header>
 
-  <.table id="items" rows={@order.line_items}>
-    <:col :let={item} label="Title">{item.product.title}</:col>
-    <:col :let={item} label="Quantity">{item.quantity}</:col>
-    <:col :let={item} label="Price">
-      {PhxEcommerceWeb.CartHTML.currency_to_str(item.price)}
-    </:col>
-  </.table>
+  <div class="overflow-x-auto mt-6 rounded-lg shadow-sm border border-gray-200">
+    <.table id="order-items" rows={@order.line_items}>
+      <:col :let={item} label="Title">
+        <span class="font-medium">
+          {item.product.title}
+        </span>
+      </:col>
 
-  <strong>Total price:</strong>
-  {PhxEcommerceWeb.CartHTML.currency_to_str(@order.total_price)}
+      <:col :let={item} label="Quantity">
+        <span>{item.quantity}</span>
+      </:col>
 
-  <.button navigate={~p"/products"}>Back to products</.button>
+      <:col :let={item} label="Price">
+        <span class="text-green-600">
+          {PhxEcommerceWeb.CartHTML.currency_to_str(item.price)}
+        </span>
+      </:col>
+    </.table>
+  </div>
+
+  <div class="flex justify-end mt-4 space-x-2 text-lg">
+    <span class="font-semibold">Total:</span>
+    <span class="font-bold text-green-600">
+      {PhxEcommerceWeb.CartHTML.currency_to_str(@order.total_price)}
+    </span>
+  </div>
+
+  <div class="mt-6">
+    <.button navigate={~p"/"} class="btn btn-primary">
+      Back to products
+    </.button>
+  </div>
 </Layouts.app>

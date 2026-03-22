@@ -37,6 +37,11 @@
         <li>
           {@current_scope.user.email}
         </li>
+        <%= if @current_scope.user.is_admin do %>
+          <li>
+            <.link navigate="/products">Admin</.link>
+          </li>
+        <% end %>
         <li>
           <.link href={~p"/users/settings"}>Settings</.link>
         </li>

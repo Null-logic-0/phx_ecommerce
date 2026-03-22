@@ -3,15 +3,19 @@
     Product {@product.id}
     <:subtitle>This is a product record from your database.</:subtitle>
     <:actions>
-      <.button navigate={~p"/products"}>
-        <.icon name="hero-arrow-left" />
-      </.button>
-      <.button variant="primary" navigate={~p"/products/#{@product}/edit?return_to=show"}>
-        <.icon name="hero-pencil-square" /> Edit product
-      </.button>
-      <.button href={~p"/cart_items?product_id=#{@product.id}"} method="post">
-        Add to cart
-       </.button>
+      <div class="flex gap-6 items-center">
+        <.button navigate={~p"/"}>
+          <.icon name="hero-arrow-left" />
+        </.button>
+        <%= if @current_scope.is_admin do %>
+          <.button variant="primary" navigate={~p"/products/#{@product}/edit?return_to=show"}>
+            <.icon name="hero-pencil-square" /> Edit product
+          </.button>
+        <% end %>
+        <.button href={~p"/cart_items?product_id=#{@product.id}"} method="post">
+          Add to cart
+        </.button>
+      </div>
     </:actions>
   </.header>
 

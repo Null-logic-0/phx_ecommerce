@@ -54,6 +54,8 @@ defmodule PhxEcommerce.Catalog do
 
   """
   def create_product(attrs) do
+    attrs = upload_file(attrs)
+
     %Product{}
     |> change_product(attrs)
     |> Repo.insert()
@@ -72,9 +74,39 @@ defmodule PhxEcommerce.Catalog do
 
   """
   def update_product(%Product{} = product, attrs) do
+    attrs = upload_file(attrs)
+
     product
     |> change_product(attrs)
     |> Repo.update()
+  end
+
+  defp upload_file(attrs) do
+    case attrs["image_path"] do
+      %Plug.Upload{} = upload ->
+        # 5 MB limit
+        max_bytes = 5 * 1024 * 1024
+        file_size = File.stat!(upload.path).size
+
+        if file_size > max_bytes do
+          raise "Uploaded file is too large. Max 5MB allowed."
+        end
+
+        allowed_types = ["image/jpeg", "image/png", "image/webp"]
+
+        if upload.content_type not in allowed_types do
+          raise "Invalid file type. Only JPEG, PNG, WEBP allowed."
+        end
+
+        filename = Path.basename(upload.filename)
+        dest = Path.join(["priv/static/uploads", filename])
+        File.cp!(upload.path, dest)
+
+        Map.put(attrs, "image_path", "/uploads/#{filename}")
+
+      _ ->
+        attrs
+    end
   end
 
   @doc """

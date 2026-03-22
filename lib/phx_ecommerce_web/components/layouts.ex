@@ -49,9 +49,6 @@ defmodule PhxEcommerceWeb.Layouts do
           <li>
             <.link navigate="/" class="btn btn-ghost">Home</.link>
           </li>
-          <li>
-            <.link navigate="/products" class="btn btn-ghost">Products</.link>
-          </li>
 
           <li>
             <.theme_toggle />

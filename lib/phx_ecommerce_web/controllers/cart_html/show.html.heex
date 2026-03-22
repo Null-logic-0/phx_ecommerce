@@ -3,27 +3,45 @@
     My Cart
     <:subtitle :if={@cart.items == []}>Your cart is empty</:subtitle>
 
-    <:actions>
-      <.button href={~p"/orders"} method="post">
-        Complete order
+    <:actions :if={@cart.items !== []}>
+      <.button href={~p"/orders"} method="post" class="btn btn-primary">
+        Complete Order
       </.button>
     </:actions>
   </.header>
 
-  <div :if={@cart.items !== []}>
-    <.form :let={f} for={@changeset} action={~p"/cart"} method="post">
+  <div :if={@cart.items !== []} class="space-y-6">
+    <.form :let={f} for={@changeset} action={~p"/cart"} method="put" class="space-y-6">
       <.inputs_for :let={%{data: item} = item_form} field={f[:items]}>
-        <.input field={item_form[:quantity]} type="number" label={item.product.title} min="1" />
-        <span>{currency_to_str(ShoppingCart.total_item_price(item))}</span>
+        <div class="flex items-center justify-between gap-4 p-4 border rounded-md shadow-sm hover:shadow-md transition">
+          <div class="flex flex-col">
+            <span class="font-medium">{item.product.title}</span>
+            <span class="text-sm text-gray-500">{currency_to_str(item.product.price)} each</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <.input field={item_form[:quantity]} type="number" min="1" class="w-20 text-center" />
+            <span class="font-medium">
+              {currency_to_str(ShoppingCart.total_item_price(item))}
+            </span>
+          </div>
+        </div>
       </.inputs_for>
 
-      <div>
-        <b>Total:</b> {currency_to_str(ShoppingCart.total_cart_price(@cart))}
+      <div class="flex justify-end">
+        <.button type="submit" class="btn btn-secondary">Update Cart</.button>
       </div>
-
-      <.button type="submit">Update cart</.button>
     </.form>
+
+    <div class="flex justify-end items-center space-x-4 pt-4 border-t">
+      <span class="text-lg font-semibold">Total:</span>
+      <span class="text-lg font-bold">
+        {currency_to_str(ShoppingCart.total_cart_price(@cart))}
+      </span>
+    </div>
   </div>
 
-  <.button navigate={~p"/products"}>Back to products</.button>
+  <div class="mt-6">
+    <.button navigate={~p"/"}>Back to products</.button>
+  </div>
 </Layouts.app>

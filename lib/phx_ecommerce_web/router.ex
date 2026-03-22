@@ -38,12 +38,19 @@ defmodule PhxEcommerceWeb.Router do
   end
 
   scope "/", PhxEcommerceWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_authenticated_user, :require_admin]
 
     resources "/products", ProductController
+  end
+
+  scope "/", PhxEcommerceWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
     resources "/cart_items", CartItemController, only: [:create, :delete]
     get "/cart", CartController, :show
     put "/cart", CartController, :update
+
+    get "/products/:id", ProductController, :show
 
     resources "/orders", OrderController, only: [:create, :show]
   end

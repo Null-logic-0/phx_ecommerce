@@ -1,7 +1,20 @@
-<.form :let={f} for={@changeset} action={@action} class="space-y-6">
+<.form :let={f} for={@changeset} action={@action} multipart class="space-y-6">
   <.input field={f[:title]} type="text" label="Title" />
   <.input field={f[:description]} type="text" label="Description" />
   <.input field={f[:price]} type="number" label="Price" step="any" />
+
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">Product Image</legend>
+    <%= if @changeset.data.image_path do %>
+      <img src={@changeset.data.image_path} class="max-h-32 mb-2" alt="Current product image" />
+    <% end %>
+    <.input
+      field={f[:image_path]}
+      type="file"
+      class="file-input"
+    />
+  </fieldset>
+
   <div class="flex flex-wrap gap-2 my-6">
     <%= for {label, value} <- category_opts(@changeset) do %>
       <label>
@@ -12,16 +25,15 @@
           class="hidden peer"
           checked={value in (f[:category_ids].value || [])}
         />
-
         <span class="px-3 py-1 rounded-full border-base-500 border cursor-pointer
                      peer-checked:bg-base-300 peer-checked:text-white
-                     hover:bg-base-300 transition  select-none">
+                     hover:bg-base-300 transition select-none">
           {label}
         </span>
       </label>
     <% end %>
   </div>
-  <.input field={f[:image_path]} type="text" label="Image path" />
+
   <footer>
     <.button variant="primary">Save Product</.button>
     <.button :if={@return_to} href={@return_to}>Cancel</.button>
