@@ -1,6 +1,9 @@
 defmodule PhxEcommerceWeb.Router do
   use PhxEcommerceWeb, :router
 
+  import PhxEcommerceWeb.UserAuth
+  alias PhxEcommerce.ShoppingCart
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,7 +11,21 @@ defmodule PhxEcommerceWeb.Router do
     plug :put_root_layout, html: {PhxEcommerceWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_scope_for_user
+    plug :fetch_current_cart
   end
+
+  defp fetch_current_cart(%{assigns: %{current_scope: scope}} = conn, _opts)
+       when not is_nil(scope) do
+    if cart = ShoppingCart.get_cart(scope) do
+      assign(conn, :cart, cart)
+    else
+      {:ok, new_cart} = ShoppingCart.create_cart(scope, %{})
+      assign(conn, :cart, new_cart)
+    end
+  end
+
+  defp fetch_current_cart(conn, _opts), do: conn
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -18,7 +35,17 @@ defmodule PhxEcommerceWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+  end
+
+  scope "/", PhxEcommerceWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
     resources "/products", ProductController
+    resources "/cart_items", CartItemController, only: [:create, :delete]
+    get "/cart", CartController, :show
+    put "/cart", CartController, :update
+
+    resources "/orders", OrderController, only: [:create, :show]
   end
 
   # Other scopes may use custom stacks.
@@ -41,5 +68,31 @@ defmodule PhxEcommerceWeb.Router do
       live_dashboard "/dashboard", metrics: PhxEcommerceWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  ## Authentication routes
+
+  scope "/", PhxEcommerceWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+  end
+
+  scope "/", PhxEcommerceWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm-email/:token", UserSettingsController, :confirm_email
+  end
+
+  scope "/", PhxEcommerceWeb do
+    pipe_through [:browser]
+
+    get "/users/log-in", UserSessionController, :new
+    get "/users/log-in/:token", UserSessionController, :confirm
+    post "/users/log-in", UserSessionController, :create
+    delete "/users/log-out", UserSessionController, :delete
   end
 end

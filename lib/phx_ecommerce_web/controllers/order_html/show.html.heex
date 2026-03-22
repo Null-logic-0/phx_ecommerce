@@ -1,0 +1,21 @@
+<Layouts.app flash={@flash}>
+  <.header>
+    Thank you for your order!
+    <:subtitle>
+      <strong>Email: </strong>{@current_scope.user.email}
+    </:subtitle>
+  </.header>
+
+  <.table id="items" rows={@order.line_items}>
+    <:col :let={item} label="Title">{item.product.title}</:col>
+    <:col :let={item} label="Quantity">{item.quantity}</:col>
+    <:col :let={item} label="Price">
+      {PhxEcommerceWeb.CartHTML.currency_to_str(item.price)}
+    </:col>
+  </.table>
+
+  <strong>Total price:</strong>
+  {PhxEcommerceWeb.CartHTML.currency_to_str(@order.total_price)}
+
+  <.button navigate={~p"/products"}>Back to products</.button>
+</Layouts.app>

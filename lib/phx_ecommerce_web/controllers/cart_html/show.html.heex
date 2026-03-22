@@ -1,0 +1,29 @@
+<Layouts.app flash={@flash}>
+  <.header>
+    My Cart
+    <:subtitle :if={@cart.items == []}>Your cart is empty</:subtitle>
+
+    <:actions>
+      <.button href={~p"/orders"} method="post">
+        Complete order
+      </.button>
+    </:actions>
+  </.header>
+
+  <div :if={@cart.items !== []}>
+    <.form :let={f} for={@changeset} action={~p"/cart"} method="post">
+      <.inputs_for :let={%{data: item} = item_form} field={f[:items]}>
+        <.input field={item_form[:quantity]} type="number" label={item.product.title} min="1" />
+        <span>{currency_to_str(ShoppingCart.total_item_price(item))}</span>
+      </.inputs_for>
+
+      <div>
+        <b>Total:</b> {currency_to_str(ShoppingCart.total_cart_price(@cart))}
+      </div>
+
+      <.button type="submit">Update cart</.button>
+    </.form>
+  </div>
+
+  <.button navigate={~p"/products"}>Back to products</.button>
+</Layouts.app>
